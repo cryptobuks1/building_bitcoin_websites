@@ -19,7 +19,7 @@
     </head>
     <body>
         <div id="container">
-            <img src="./img/bitcoin.png" alt="Bitcoin">bitcoin<br>
+            <img src="./img/bitcoin.png" alt="Bitcoin"><br>
             $<?php echo $json['data']['amount']; ?>
         </div>
     </body>
