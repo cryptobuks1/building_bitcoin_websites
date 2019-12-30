@@ -30,26 +30,27 @@
     <body>
         <div id="container">
             <img src="./img/bitcoin.png" alt="bitcoin"><br>
-            <input type="text" id="btc" placeholder="btc" onchange="btcConvert()" onkeyup="btcConvert()">
-            <input type="text" id="usd" placeholder="usd" onchange="usdConvert()" onkeyup="usdConvert()">
+            <input type="text" id="btc" placeholder="₿" onchange="btcConvert()" onkeyup="btcConvert()">
+            <input type="text" id="usd" placeholder="USD" onchange="usdConvert()" onkeyup="usdConvert()">
         </div>
 
         <script>
             var btc = '<?php echo $json["data"]["amount"]; ?>';
+            console.log('btc: ', btc);
 
-            function btcConvert()
-            {
+            function btcConvert() {
                 var amount = document.getElementById("btc").value;
-                var btcCalc = amount * btc;
-                var btcCalc = btcCalc.toFixed(2);
+                console.log('amount: ', amount);
+                var btcCalc = (amount * btc).toFixed(2);
+                console.log('btcCalc: ', btcCalc);
                 document.getElementById("usd").value = btcCalc;
             }
 
-            function usdConvert()
-            {
-                var usd = document.getElementById("usd");
-                var usdCalc = usd / btc;
-                var usdCalc = usdCalc.toFixed(8);
+            function usdConvert() {
+                var usd = document.getElementById("usd").value;
+                console.log('usd: ', usd);
+                var usdCalc = (usd / btc).toFixed(8);
+                console.log('usdCalc: ', usdCalc);
                 document.getElementById("btc").value = usdCalc;
             }
         </script>
