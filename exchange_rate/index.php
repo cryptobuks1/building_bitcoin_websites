@@ -3,7 +3,7 @@
     $fileGet = file_get_contents($url);
     $json = json_decode($fileGet, TRUE);
 ?>
-<! DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
         <title>BTC Price</title>
