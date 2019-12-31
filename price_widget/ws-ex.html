@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <div id="btc"></div>
+        <script>
+            var ws = new WebSocket("wss://api-pub.bitfinex.com/ws/2");
+            
+            ws.onopen = function(){
+                ws.send(JSON.stringify({"event":"subscribe", "channel":"ticker", "pair":"tBTCUSD"}))
+            };
+
+            ws.onmessage = function(msg){
+                var response = JSON.parse(msg.data);
+
+                console.log(JSON.parse(msg.data))
+
+                var hb = response[1];
+                if(hb != "hb"){
+                    document.getElementById("btc").innerHTML = "$" + response[1][6];
+                }
+            }
+        </script>
+    </body>
+</html>
