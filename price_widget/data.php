@@ -46,7 +46,7 @@
                     <td align="right">L $ $lowPrice</td>
                 </tr>
                 <tr>
-                    <td align="right" colspan="2" id="dateTime">API data from <a href="https://bitstamp.net/" target="_blank">Bitstamp.net</a> - $date</td>
+                    <td align="right" colspan="2" id="dateTime">API data from <a href="https://bitstamp.net/" target="_blank">Bitstamp.net</a><br>$date</td>
                 </tr>
             </table>
             EOT;
