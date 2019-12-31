@@ -6,10 +6,7 @@
      * ISBN 153494544X                  *
      ************************************/
 
-    $api_key = "";
-    $xpub = "xpub6BhRh2ku39Z37WgXirSh6iRXAgXa94wWPLbD2pPfFThZF8VqWvSP8GB6QUeyTrfSV79hfm2UzfrV61XUM9HPsAaeX9EmKJbGmhFibBZkyKa"; // Enjin BTC wallet
-    $secret = hash("tiger192,4", "one, two, three o'clock, four o'clock rock!");
-    $rootURL = "http://localhost/building_bitcoin_websites/blockchain.info_merchant_api/";
+    require_once('config.inc.php');
     $orderID = uniqid();
 
     $callback_url = $rootURL."callback.php?invoice=".$orderID."&secret=".$secret;

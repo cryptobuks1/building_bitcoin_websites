@@ -6,7 +6,7 @@
      * ISBN 153494544X                  *
      ************************************/
 
-    $secret = hash("tiger192,4", "one, two, three o'clock, four o'clock rock!");
+    require_once('config.inc.php');
 
     if($_GET['secret'] != $secret)
     {

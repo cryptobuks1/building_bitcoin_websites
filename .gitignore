@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.inc.php
+config.inc.php
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
