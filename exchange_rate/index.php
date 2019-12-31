@@ -6,6 +6,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
         <title>BTC Price</title>
         <link href="https://fonts.googleapis.com/css?family=Ubuntu:700italic" rel="stylesheet" type="text/css">
         <style>
