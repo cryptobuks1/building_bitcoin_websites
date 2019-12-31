@@ -1,4 +1,11 @@
 <?php
+    /************************************
+     * Modified examples from the book  *
+     * Building Bitcoin Websites        *
+     * by Kyle Honeycutt @coinableS     *
+     * ISBN 153494544X                  *
+     ************************************/
+    
     $url = "https://api.coinbase.com/v2/prices/spot?currency=USD";
     $fileGet = file_get_contents($url);
     $json = json_decode($fileGet, TRUE);
