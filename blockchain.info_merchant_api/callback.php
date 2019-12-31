@@ -7,6 +7,7 @@
      ************************************/
 
     require_once('config.inc.php');
+    $confirmations = $_GET['confirmations'];
 
     if($_GET['secret'] != $secret)
     {
@@ -14,18 +15,33 @@
     }
     else
     {
-        // automatically generated $_GET[] - value, confirmations, address, transaction_hash
-        $orderNum = $_GET['invoice'];
-        $amount = $_GET['value'];
-        $amountCalc = $amount / 100000000;  
-
-        $queryUpdate = "UPDATE orders 
-                        SET paid = 1, recd = $amount
-                        WHERE orderID = '$orderNum'";
-        $doUpdate = mysqli_query($conn, $queryUpdate) or die(mysqli_error($conn));
-        if($doUpdate)
+        if ($confirmations <= $setting_confirmations) 
         {
-            echo '*ok*';
+            //Insert into pending payments
+            //Don't print *ok* so the notification resent again on next confirmation
+
+            // Update db with confirmation status of payment
+            $queryUpdate = "UPDATE orders 
+                            SET paid = $confirmations
+                            WHERE orderID = '$orderNum'";
+
+            mysqli_query($conn, $queryUpdate) or die(mysqli_error($conn));
+        }
+        else
+        {
+            // Automatically generated $_GET[] - invoice, value, confirmations, address, transaction_hash
+            $orderNum = $_GET['invoice'];
+            $amount = $_GET['value'];
+            $amountCalc = $amount / 100000000;  
+
+            $queryUpdate = "UPDATE orders 
+                            SET paid = $confirmations, recd = $amount
+                            WHERE orderID = '$orderNum'";
+            $doUpdate = mysqli_query($conn, $queryUpdate) or die(mysqli_error($conn));
+            if($doUpdate)
+            {
+                echo '*ok*';
+            }
         }
     }
 ?>
