@@ -39,14 +39,14 @@
             <table width="100%">
                 <tr>
                     <td rowspan="4" width="60%" id="lastPrice">$ $lastPrice</td>
-                    <td align="right" style="color: $color;">$percentChange %</td>
+                    <td align="right" style="color: $color;">24hr $percentChange %</td>
                 </tr>
                 <td align="right">H $ $highPrice</td>
                 <tr>
                     <td align="right">L $ $lowPrice</td>
                 </tr>
                 <tr>
-                    <td align="right" colspan="2" id="dateTime">$date</td>
+                    <td align="right" colspan="2" id="dateTime">API data from <a href="https://bitstamp.net/" target="_blank">Bitstamp.net</a> - $date</td>
                 </tr>
             </table>
             EOT;
