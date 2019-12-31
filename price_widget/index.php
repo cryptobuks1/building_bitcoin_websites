@@ -24,7 +24,7 @@
                 color: #999;
             }
         </style>
-        <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     </head>
     <body>
         <div id="container">
