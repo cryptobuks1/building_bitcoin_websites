@@ -1,14 +1,8 @@
 {
 	"folders": [
 		{
-			"path": "exchange_rate"
-		},
-		{
-			"path": "price_widget"
-		},
-		{
-			"name": ".git",
-			"path": ".git"
+			"path": "."
 		}
-	]
+	],
+	"settings": {}
 }
