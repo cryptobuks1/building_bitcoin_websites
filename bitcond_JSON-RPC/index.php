@@ -22,7 +22,7 @@
     $url = "https://www.bitstamp.net/api/ticker/";
     $fileGet = file_get_contents($url);
     $json = json_decode($fileGet, TRUE);
-    $lastPrice = number_format($json['last'], 2);
+    $lastPrice = number_format($json['last'], 2, '.','');
 
     // taken from php.net
     function formatBytes($bytes, $precision = 2) 
@@ -45,7 +45,8 @@
     <body>
         <div>
             <?php if(!$bitcoin->error){ $feerate = number_format($smartfee['feerate'],8); ?>
-            <p>Transaction waiting since block # <?php print_r($tip); ?> : <?php print_r($freshtxinfo['size']); ?> txs (<?php print_r(formatBytes($freshtxinfo['usage'])); ?>)</p>
+            <p>Transaction waiting since block # <?php print_r($tip); ?> : <?php print_r($freshtxinfo['size']); ?> txs (<?php print_r(formatBytes($freshtxinfo['usage'])); ?>) 
+            Current Price: $<?php print_r($lastPrice); ?> (<a href="<?php print_r($url);?>"><?php print_r($url); ?></a>) </p>
             <p>Next block fee estimate: <?php print_r($feerate); ?> sats/byte | $<?php print_r($feerate* $lastPrice); ?> /byte</p>
             <?php }else{ ?>
             <p>Error: <?php print_r($bitcoin->error); ?></p>
