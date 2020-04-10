@@ -51,7 +51,14 @@
             <?php }else{ ?>
             <p>Error: <?php print_r($bitcoin->error); ?></p>
             <p>Status: <?php print_r($bitcoin->status); ?></p>
-            <?php } ?>
+            <?php } 
+            
+            
+            echo 'Tip: <pre>'; print_r($tip); echo '</pre>';
+            echo 'Blockhash: <pre>'; print_r($blockhash); echo '</pre>';
+            echo 'Mempool Size: <pre>'; print_r($freshtxinfo); echo '</pre>';
+            echo 'Smart Fee: <pre>'; print_r($smartfee); echo '</pre>';
+            ?>
         </div>
     </body>
 </html>

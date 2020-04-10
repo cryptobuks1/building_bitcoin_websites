@@ -19,6 +19,9 @@
     curl_setopt($ch, CURLOPT_URL, $recieve_url); // tell curl where to go
     $ccc = curl_exec($ch);
 
+    echo '<p>$ch:<br><pre>'.var_dump($ch).'</pre></p>';
+    echo '<p>$ccc:<br<pre>'.var_dump($ccc).'</pre></p>';
+
     // returned json response
     $json = json_decode($ccc, true);
     $payTo = $json['address'];
