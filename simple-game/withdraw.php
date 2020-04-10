@@ -59,15 +59,11 @@
                     // Fee calcs
                     // Fees payed by the user prevents attacks draining any surplus funds in the wallet
                     $smartFee = $bitcoin->estimatesmartfee(6);
-                    echo 'smartFee: <pre>'; print_r($smartFee); echo '</pre><br>';
-
                     $fee = toSats($smartFee['feerate']);
-                    echo 'fee: <pre>'; print_r($fee); echo '</pre><br>';
 
                     $sats = $balance - (0.25 * $fee); // Segwit transactions are roubghly 25% cheaper
                     $btc = toBTC($sats);
                     $withdrawBTC = number_format($btc, 8);
-                    echo 'withdrawBTC: <pre>'; print_r($withdrawBTC); echo '</pre><br>';
 
                     // Process withdrawl
                     $doWithdrawal = $bitcoin->sendtoaddress($address, $withdrawBTC);
