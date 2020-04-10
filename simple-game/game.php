@@ -3,10 +3,10 @@
     require('./easybitcoin.php');
     session_start();
 
-    if(isset($_POST['logout']))
+    if(isset($_POST['logout']) || !isset($_SESSION['nuid']) || $_SESSION['nuid'] == -1)
     {
         session_destroy();
-        header('Location: login.php');
+        header('Location: index.php');
     }
 
     // Check if the user is actually logged in
@@ -17,7 +17,7 @@
 
     if($numRows != 1)
     {
-        header("Location: login.php");
+        header("Location: index.php");
     }
 
     $fetchUserData = mysqli_fetch_assoc($doTrueLogin) or die(mysqli_error($conn));
@@ -34,7 +34,7 @@
         {
             switch ($_POST)
             {
-                case $_POST['greater']:
+                case isset($_POST['greater']):
                     $guess = 1;
                     if($winningNumber > 50)
                     {
@@ -57,7 +57,7 @@
                         updateBalance(($balance -100), $_SESSION['nuid'], $conn);
                     }
                 break;
-                case $_POST['exacly']:
+                case isset($_POST['exacly']):
                     $guess = 0;
                     if($winningNumber == 50)
                     {
@@ -80,7 +80,7 @@
                         updateBalance(($balance -100), $_SESSION['nuid'], $conn);
                     }
                 break;
-                case $_POST['less']:
+                case isset($_POST['less']):
                     $guess = -1;
                     if($winningNumber < 50)
                     {
@@ -141,21 +141,21 @@
     <head></head>
     <body>
         <h4>Welcome, <?php echo $username; ?>.</h4><br>
-        Your Balance: <?php echo $balance; ?> sats<br>
+        Your Balance: <?php echo $balance; ?> sats. <?php if($balance >= 547){ echo '<a href="withdraw.php">Withdraw balance.</a>'; }else{ echo 'Min balance to withdraw 547 sats.'; } ?><br>
         Deposit Address: <?php echo $deposit_address; ?><br>
         <img src="http://chart.googleapis.com/chart?chs=125x125^cht=qr&ch1=<?php echo $deposit_address; ?>">
         <hr>
         <?php if(isset($message)){ echo $message.'<hr>'; }?>
-        RULES: The object of the game is to correctly guess if the computer will pick a number greater or less than 50.
-        Every guess will cost you 100 sats. If you guess correctly you will win 198 satoshis in return, if you guess wrong you recieve nothing.
-        BONUS, if you guess correctly with the EXACTLY 50 option you will win 9900 sats.<br>
+        <strong>RULES:</strong> The object of the game is to correctly guess if the computer will pick a number greater or less than 50.<br>
+        Every guess will cost you 100 sats. If you guess correctly you will win 198 satoshis in return, if you guess wrong you recieve nothing.<br>
+        <strong>BONUS:</strong> if you guess correctly with the EXACTLY 50 option you will win 9900 sats.<br>
         <hr>
         <h4>Make your guess!</h4>
         <form method="post" action="?">
-            <input type="submit" name="greater" value="Over 50"/><br>
-            <input type="submit" name="exactly" value="Exactly 50"/><br>
+            <input type="submit" name="greater" value="Over 50"/> || 
+            <input type="submit" name="exactly" value="Exactly 50"/> ||
             <input type="submit" name="less" value="Under 50"/><br><br><br><br>
-            <input type="submit" name="logout" value="Logout"/><br>
+            <input type="submit" name="logout" value="Logout"/> || <br>
         </form>
     </body>
 </html>
