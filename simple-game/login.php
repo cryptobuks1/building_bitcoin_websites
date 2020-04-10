@@ -12,12 +12,14 @@
         $username = $_POST['username'];
         $password = $_POST['pw'];
 
-        mysqli_set_charset($conn, 'utf8');
-        $username = mysqli_real_escape_string($conn, $username);
-        $password = mysqli_real_escape_string($conn, $password);
+        $loginQuery = $conn->prepare("SELECT * FROM game_users WHERE username = :username");
+        $loginQuery->bindParam(':username', $username);
 
-        $loginQuery = mysqli_query($conn, "SELECT * FROM game_users WHERE username = '$username'");
-        $loginData = mysqli_fetch_assoc($loginQuery) or die(mysqli_error($conn));
+        $loginQuery->execute();
+
+        $loginData = $loginQuery->fetchAll(PDO::FETCH_ASSOC);
+
+        $passCheck = password_verify(trim($password), $loginData[0]['userpass']);
 
         if(trim($username) == '')
         {
@@ -25,7 +27,7 @@
             $error_username = 'You must enter a username.';
         }
 
-        if(trim($username) != $loginData['username'])
+        if(trim($username) != $loginData[0]['username'])
         {
             // no username
             $error_username = 'Incorrect username.';
@@ -36,8 +38,8 @@
             // no password
             $error_password = 'You must enter a password.';
         }
-        
-        if(!password_verify(trim($password), $loginData['userpass']))
+
+        if(!$passCheck)
         {
             // incorrect password
             $error_password = 'Incorrect password.';
@@ -50,7 +52,7 @@
         }
 
         // Input checks passed, continue login
-        $userid = $loginData['userid'];
+        $userid = $loginData[0]['userid'];
         $_SESSION['nuid'] = $userid;
 
         header('Location: game.php');
@@ -70,7 +72,7 @@
     <head></head>
     <body>
         <form method="post" action="?run=login">
-            Username:<br><input type="text" id="username" maxlength="20"> <?php echo $error_username; ?><br>
+            Username:<br><input type="text" id="username" name="username" maxlength="20"> <?php echo $error_username; ?><br>
             Password:<br><input type="password" id="pw" name="pw"> <?php echo $error_password; ?><br>
             <input type="submit" name="submit" value="Login"/>
         </form>

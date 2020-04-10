@@ -4,6 +4,7 @@
     require('./config.inc.php');
     require('./easybitcoin.php');
     require('./tools.php');             // sats-btc and btc-sats conversion functions
+    session_start();
 
     if(!isset($_SESSION['nuid']) || $_SESSION['nuid'] == -1)
     {
@@ -13,9 +14,11 @@
 
     // Check if the user is actually logged in
     $userid = $_SESSION['nuid'];
-    $trueLogin = "SELECT * FROM game_users WHERE userid = '$userid'";
-    $doTrueLogin = mysqli_query($conn, $trueLogin);
-    $numRows = mysqli_num_rows($doTrueLogin) or die(mysqli_error($conn));
+    $trueLogin = $conn->prepare("SELECT count(*) FROM game_users WHERE userid = :userid");
+    $trueLogin->bindParam(':userid', $userid);
+
+    $trueLogin->execute();
+    $numRows = $trueLogin->fetchColumn();
 
     if($numRows != 1)
     {
@@ -25,14 +28,23 @@
     {
         $bitcoin = new Bitcoin($rpcUsername, $rpcPassword, $nodeIP);
 
-        $fetchUserData = mysqli_fetch_assoc($doTrueLogin);
-        $balance = $fetchUserData['balance'];
-        $username = $fetchUserData['username'];
+        $getUserData = $conn->prepare("SELECT * FROM game_users WHERE userid = :userid");
+        $getUserData->bindParam(':userid', $userid);
+
+        $getUserData->execute();
+
+        $fetchUserData = $getUserData->fetchAll(PDO::FETCH_ASSOC);
+
+        $balance = $fetchUserData[0]['balance'];
+        $username = $fetchUserData[0]['username'];
 
         if(isset($_POST['withdraw']))
         {
-            $address = $bitcoin->validateaddress($address);
-            $isValid = $address['isvalid'];
+            $address = $_POST['address'];
+
+            $checkValid = $bitcoin->validateaddress($address);
+            $isValid = $checkValid['isvalid'];
+
             if($balance >= 547)
             {
                 // Check valid address
@@ -44,14 +56,38 @@
                 else
                 {
                     // Process withdrawal
-                    $btc = toBTC($balance);
-                    $btc = number_format($btc, 8);
-                    $doWithdrawal = $bitcoin->sendtoaddress($address, $btc);
-                    $message = 'Transaction: <a href="https://www.smartbit.com.au/tx/">'.$doWithdrawal.'</a>';
+                    // Fee calcs
+                    // Fees payed by the user prevents attacks draining any surplus funds in the wallet
+                    $smartFee = $bitcoin->estimatesmartfee(6);
+                    echo 'smartFee: <pre>'; print_r($smartFee); echo '</pre><br>';
 
-                    $updateBalace = "UPDATE game_users SET balance = 0 WHERE userid = '".$_SESSION['nuid']."'";
-                    $doUpdateBalance = mysqli_query($conn, $updateBalace);
-                    $balance = 0;
+                    $fee = toSats($smartFee['feerate']);
+                    echo 'fee: <pre>'; print_r($fee); echo '</pre><br>';
+
+                    $sats = $balance - (0.25 * $fee); // Segwit transactions are roubghly 25% cheaper
+                    $btc = toBTC($sats);
+                    $withdrawBTC = number_format($btc, 8);
+                    echo 'withdrawBTC: <pre>'; print_r($withdrawBTC); echo '</pre><br>';
+
+                    // Process withdrawl
+                    $doWithdrawal = $bitcoin->sendtoaddress($address, $withdrawBTC);
+
+                    if($doWithdrawal)
+                    {
+                        $message = 'Transaction: <a href="https://www.smartbit.com.au/tx/'.$doWithdrawal.'" target="_blank">'.$doWithdrawal.'</a>';
+
+                        $updateBalace = $conn->prepare("UPDATE game_users SET balance = 0 WHERE userid = :userid");
+                        $updateBalace->bindParam(':userid', $_SESSION['nuid']);
+
+                        $updateBalace->execute();
+
+                        $balance = 0;
+                    }
+                    else
+                    {
+                        $message = 'Transaction error';
+                        echo 'TX Error: <pre>'; print_r($doWithdrawal); echo '</pre><br>';
+                    }
                 }
             }
             else
@@ -68,10 +104,10 @@
     <head></head>
     <body>
         <h4>Welcome, <?php echo $username; ?>.</h4><br>
-        Your Balance: <?php echo $balance; ?> sats. <?php if($balance >= 547){ echo '<a href="withdraw.php">Withdraw balance.</a>'; }else{ echo 'Min balance to withdraw 547 sats.'; } ?><br>
+        Your Balance: <?php echo $balance; ?> sats.<br>
         <hr>
         <?php if(isset($message)){ echo $message.'<hr>'; }?>
-        <h4>Withdrraw balance:</h4>
+        <h4>Withdraw balance:</h4>
         <form method="post" action="?">
             Wirhdraw to this Address: <input type="text" name="address" size="60"/> <?php echo $error_address; ?><br>
             <input type="submit" name="withdraw" value="Withdraw"/><br>

@@ -29,13 +29,13 @@
     <body>
         <h4>Welcome.</h4><br>
         <strong>RULES:</strong> The object of the game is to correctly guess if the computer will pick a number greater or less than 50.<br>
-        Every guess will cost you 100 sats. If you guess correctly you will win 198 satoshis in return, if you guess wrong you recieve nothing.<br>
+        Every guess will cost you 100 sats. If you guess correctly you will win 99 satoshis in return, if you guess wrong you recieve nothing.<br>
         <strong>BONUS:</strong> if you guess correctly with the EXACTLY 50 option you will win 9900 sats.<br>
         <hr>
         <h4>Make your choice!</h4>
         <form method="post" action="index.php">
-            <input type="submit" name="register" value="Register"/><br>
-            <input type="submit" name="login" value="Login"/><br><br><br><br>
+            <input type="submit" name="register" value="Register"/> || 
+            <input type="submit" name="login" value="Login"/> || 
             <input type="submit" name="leave" value="Leave"/><br>
         </form>
     </body>
